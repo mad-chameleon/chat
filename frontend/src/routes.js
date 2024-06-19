@@ -1,6 +1,6 @@
 const apiPath = '/api/v1';
 export default {
-  rootPagePath: () => '/',
+  chatPagePath: () => '/',
   loginPagePath: () => '/login',
   signupPagePath: () => '/signup',
   otherPagePath: () => '*',

@@ -1,13 +1,21 @@
 import { Form, Button, FloatingLabel } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
 
 import { useTranslation } from 'react-i18next';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
+import { useAuth } from '../../hooks';
+import routes from '../../routes';
 
 const LoginForm = () => {
   const { t } = useTranslation();
+  const auth = useAuth();
+  const navigate = useNavigate();
 
   const inputRef = useRef();
+
+  const [authFailed, setAuthFailed] = useState(false);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -19,6 +27,20 @@ const LoginForm = () => {
       password: '',
     },
     onSubmit: async (values, { setSubmitting }) => {
+      setAuthFailed(false);
+      try {
+        const { data: { token } } = await axios.post(routes.signInApiPath(), values);
+        auth.logIn(token);
+        navigate(routes.chatPagePath());
+      } catch (error) {
+        setSubmitting(false);
+        if (error instanceof AxiosError && error.response.status === 401) {
+          setAuthFailed(true);
+          inputRef.current.select();
+          return;
+        }
+        throw (error);
+      }
     },
   });
 
@@ -35,6 +57,7 @@ const LoginForm = () => {
           required
           value={formik.values.username}
           onChange={formik.handleChange}
+          isInvalid={authFailed}
         />
       </FloatingLabel>
       <FloatingLabel label={t('form.fields.password')} className="mb-4" controlId="password">
@@ -44,8 +67,9 @@ const LoginForm = () => {
           placeholder={t('form.fields.password')}
           required
           onChange={formik.handleChange}
+          isInvalid={authFailed}
         />
-        <Form.Control.Feedback type="invalid">{t('errors.loginFailed')}</Form.Control.Feedback>
+        <Form.Control.Feedback type="invalid" tooltip>{t('errors.loginFailed')}</Form.Control.Feedback>
       </FloatingLabel>
       <Button variant="outline-primary" type="submit" className="w-100 mb-3">
         {t('form.signInBtn')}

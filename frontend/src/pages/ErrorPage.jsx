@@ -21,7 +21,7 @@ const ErrorPage = () => {
           <Card.Text className="text-center fs-3 pt-3 text-wrap text-muted">
             {t('errors.routeErrors.notFound')}
           </Card.Text>
-          <Card.Link href={routes.rootPagePath()} className="text-center link-dark pt-3">
+          <Card.Link href={routes.chatPagePath()} className="text-center link-dark pt-3">
             {t('nav.main')}
           </Card.Link>
         </CardBody>
