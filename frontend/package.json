@@ -12,6 +12,7 @@
     "bootstrap": "^5.3.3",
     "formik": "^2.4.6",
     "i18next": "^23.11.5",
+    "leo-profanity": "^1.7.0",
     "profanity": "^0.0.2",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
@@ -31,7 +32,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-
   "browserslist": {
     "production": [
       ">0.2%",

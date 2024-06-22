@@ -4,12 +4,13 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Navbar from './Navbar';
 import ErrorPage from '../pages/ErrorPage';
 import LoginPage from '../pages/LoginPage';
+import ChatPage from '../pages/ChatPage';
 import routes from '../routes';
 import { useAuth } from '../hooks';
 
 const App = () => {
   const { isLoggedIn } = useAuth();
-  const Redirect = isLoggedIn ? <Navigate to={routes.chatPagePath()} /> : <Navigate to={routes.loginPagePath()} />;
+  const Redirect = isLoggedIn ? <ChatPage /> : <Navigate to={routes.loginPagePath()} />;
 
   return (
     <div className="d-flex flex-column h-100">

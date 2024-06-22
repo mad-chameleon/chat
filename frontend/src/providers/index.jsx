@@ -3,19 +3,17 @@ import { AuthContext } from '../contexts/index';
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const userLoggedIn = localStorage.getItem('user');
+    const userLoggedIn = localStorage.getItem('userToken');
     return !!userLoggedIn;
   });
 
   const logIn = (token) => {
-    localStorage.setItem('user', JSON.stringify(token));
+    localStorage.setItem('userToken', JSON.stringify(token));
     setIsLoggedIn(true);
   };
 
   const logOut = () => {
-    // eslint-disable-next-line
-    localStorage.removeItem('user');
-    // eslint-disable-next-line
+    localStorage.removeItem('userToken');
     setIsLoggedIn(false);
   };
 
