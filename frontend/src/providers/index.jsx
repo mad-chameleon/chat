@@ -1,19 +1,24 @@
 import { useState, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { AuthContext } from '../contexts/index';
+import { fetchUserData } from '../store/slices/userSlice';
 
 export const AuthProvider = ({ children }) => {
+  const dispatch = useDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const userLoggedIn = localStorage.getItem('userToken');
+    const userLoggedIn = localStorage.getItem('userData');
     return !!userLoggedIn;
   });
 
-  const logIn = (token) => {
-    localStorage.setItem('userToken', JSON.stringify(token));
+  const logIn = (data) => {
+    dispatch(fetchUserData(data));
+    localStorage.setItem('userData', JSON.stringify(data));
     setIsLoggedIn(true);
   };
 
   const logOut = () => {
-    localStorage.removeItem('userToken');
+    localStorage.removeItem('userData');
     setIsLoggedIn(false);
   };
 

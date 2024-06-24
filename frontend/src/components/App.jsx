@@ -1,5 +1,7 @@
 import '../index.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 import Navbar from './Navbar';
 import ErrorPage from '../pages/ErrorPage';
@@ -10,7 +12,12 @@ import { useAuth } from '../hooks';
 
 const App = () => {
   const { isLoggedIn } = useAuth();
+  const dispatch = useDispatch();
   const Redirect = isLoggedIn ? <ChatPage /> : <Navigate to={routes.loginPagePath()} />;
+
+  useEffect(() => {
+    dispatch({ type: 'socket/connect' });
+  }, [dispatch]);
 
   return (
     <div className="d-flex flex-column h-100">

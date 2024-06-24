@@ -3,7 +3,7 @@ import {
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
 import routes from '../routes';
@@ -15,11 +15,10 @@ import MessagesList from '../components/MessagesList';
 const ChatPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { userInfo: { token } } = useSelector((state) => state.user);
 
   useEffect(() => {
     const getInitialData = async () => {
-      const token = JSON.parse(localStorage.getItem('userToken'));
-
       const params = {
         headers: {
           Authorization: `Bearer ${token}`,

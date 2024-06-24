@@ -1,20 +1,17 @@
 import { Form, Button, FloatingLabel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import axios, { AxiosError } from 'axios';
-
 import { useTranslation } from 'react-i18next';
 import { useRef, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
+
 import { useAuth } from '../../hooks';
 import routes from '../../routes';
-import { fetchUserData } from '../../store/slices/userSlice';
 
 const LoginForm = () => {
   const { t } = useTranslation();
   const auth = useAuth();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const inputRef = useRef();
 
@@ -32,9 +29,8 @@ const LoginForm = () => {
     onSubmit: async (values, { setSubmitting }) => {
       setAuthFailed(false);
       try {
-        const { data: { token } } = await axios.post(routes.signInApiPath(), values);
-        dispatch(fetchUserData({ username: values.username, token }));
-        auth.logIn(token);
+        const { data } = await axios.post(routes.signInApiPath(), values);
+        auth.logIn(data);
         navigate(routes.chatPagePath());
       } catch (error) {
         setSubmitting(false);

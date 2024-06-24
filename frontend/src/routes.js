@@ -9,9 +9,4 @@ export default {
   signUpApiPath: () => [apiPath, 'signup'].join('/'),
   channelsApiPath: () => [apiPath, 'channels'].join('/'),
   messagesApiPath: () => [apiPath, 'messages'].join('/'),
-
-  newMessagePath: () => 'newMessage',
-  newChannelPath: () => 'newChannel',
-  renameChannelPath: () => 'renameChannel',
-  removeChannelPath: () => 'removeChannel',
 };

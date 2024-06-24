@@ -6,14 +6,16 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
+import axios from 'axios';
 
 import filterProfanityWords from '../../dictionary';
+import routes from '../../routes';
 
 const ChatMessagesForm = () => {
   const { t } = useTranslation();
 
-  const { currentChannelId } = useSelector((state) => state.channels.currentChannelId);
-  const { username } = useSelector((state) => state.user);
+  const { currentChannelId } = useSelector((state) => state.channels);
+  const { userInfo: { username, token } } = useSelector((state) => state.user);
 
   const inputRef = useRef();
 
@@ -25,13 +27,22 @@ const ChatMessagesForm = () => {
     initialValues: {
       body: '',
     },
-    onSubmit: (values) => {
-      const preparedData = {
-        body: filterProfanityWords(values.body),
-        channelId: currentChannelId,
-        username,
-      };
-      formik.resetForm();
+    onSubmit: async (values) => {
+      try {
+        const preparedData = {
+          body: filterProfanityWords(values.body),
+          channelId: currentChannelId,
+          username,
+        };
+        await axios.post(routes.messagesApiPath(), preparedData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        formik.resetForm();
+      } catch (error) {
+        console.log('Failed to send a message');
+      }
     },
   });
 
@@ -41,7 +52,7 @@ const ChatMessagesForm = () => {
         <Form.Control
           ref={inputRef}
           onChange={formik.handleChange}
-          className="border-0 p-0 ps-2 form-input"
+          className="border-0 p-0 ps-2"
           name="body"
           aria-label={t('form.messages.newMessage')}
           placeholder={t('form.messages.enterMessage')}

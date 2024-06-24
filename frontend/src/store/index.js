@@ -1,14 +1,26 @@
 import { configureStore } from '@reduxjs/toolkit';
+
 import messagesReducer from './slices/messagesSlice.js';
 import channelsReducer from './slices/channelsSlice.js';
-import userReducer from './slices/userSlice.js';
-// import { renameChannel, removeChannel } from '../middlewares/index.js';
+import userReducer, { fetchUserData } from './slices/userSlice.js';
+import socketMiddleware from '../middlewares';
 
-export default configureStore({
+const store = configureStore({
   reducer: {
     channels: channelsReducer,
     messages: messagesReducer,
     user: userReducer,
   },
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(renameChannel, removeChannel),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(socketMiddleware),
 });
+
+const loadUserData = () => {
+  const userData = localStorage.getItem('userData');
+  if (userData) {
+    store.dispatch(fetchUserData(JSON.parse(userData)));
+  }
+};
+
+loadUserData();
+
+export default store;
