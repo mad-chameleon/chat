@@ -8,5 +8,6 @@ export default {
   signInApiPath: () => [apiPath, 'login'].join('/'),
   signUpApiPath: () => [apiPath, 'signup'].join('/'),
   channelsApiPath: () => [apiPath, 'channels'].join('/'),
+  editChannelApiPath: (id) => [apiPath, 'channels', `${id}`].join('/'),
   messagesApiPath: () => [apiPath, 'messages'].join('/'),
 };

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,13 @@ const MessagesList = () => {
 
   const currentChannelMessages = messages.filter((msg) => msg.channelId === currentChannelId);
   const currentChannel = channels.find(({ id }) => Number(id) === currentChannelId);
+
+  useEffect(() => {
+    if (messagesBoxRef.current) {
+      messagesBoxRef.current.scrollTop = messagesBoxRef.current.scrollHeight;
+    }
+  }, [messages, currentChannelId]);
+
   const messagesCount = currentChannelMessages.length;
 
   return (

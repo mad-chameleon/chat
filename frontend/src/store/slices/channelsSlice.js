@@ -18,14 +18,22 @@ const channelsSlice = createSlice({
     },
     addChannel: (state, { payload }) => {
       state.channelsData = [...state.channelsData, payload];
-      state.currentChannelId = payload.id;
+      state.currentChannelId = Number(payload.id);
     },
     renameChannel: (state, { payload }) => {
-      state.channelsData = payload;
+      const updatedChannelsData = state.channelsData.map(channel => {
+        if (channel.id === payload.id) {
+          return {
+            ...channel,
+            name: payload.name,
+          };
+        }
+        return channel;
+      });
+      state.channelsData = updatedChannelsData;
     },
     removeChannel: (state, { payload }) => {
-      state.currentChannelId = payload.currentChannelId;
-      state.channelsData = payload.channelsData;
+      state.channelsData = state.channelsData.filter((channel) => channel.id !== payload.id);
     },
   },
 });

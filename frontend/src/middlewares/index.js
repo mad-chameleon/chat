@@ -8,7 +8,7 @@ socket.on('connect', () => {
   console.log('Socket connection established');
 });
 
-const socketMiddleware = ({ dispatch }) => next => action => {
+const socketMiddleware = ({ dispatch }) => (next) => (action) => {
   switch (action.type) {
     case 'socket/connect':
       socket.on('newMessage', (payload) => dispatch(addMessage(payload)));

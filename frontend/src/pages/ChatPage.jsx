@@ -3,7 +3,7 @@ import {
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
 import routes from '../routes';
@@ -11,10 +11,12 @@ import { fetchChannels } from '../store/slices/channelsSlice';
 import { fetchMessages } from '../store/slices/messagesSlice';
 import ChannelsList from '../components/ChannelsList';
 import MessagesList from '../components/MessagesList';
+import { useModal } from '../hooks';
 
 const ChatPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { showModal } = useModal();
   const { userInfo: { token } } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -50,6 +52,7 @@ const ChatPage = () => {
             <Button
               variant="group-vertical"
               className="text-primary p-0"
+              onClick={() => showModal('add')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
                 <path d="M 14 1 a 1 1 0 0 1 1 1 v 12 a 1 1 0 0 1 -1 1 H 2 a 1 1 0 0 1 -1 -1 V 2 a 1 1 0 0 1 1 -1 h 12 Z M 2 0 a 2 2 0 0 0 -2 2 v 12 a 2 2 0 0 0 2 2 h 12 a 2 2 0 0 0 2 -2 V 2 a 2 2 0 0 0 -2 -2 H 2 Z" />
