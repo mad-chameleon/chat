@@ -1,7 +1,5 @@
 import '../index.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 
 import Navbar from './Navbar';
 import ErrorPage from '../pages/ErrorPage';
@@ -13,13 +11,9 @@ import modals from './modals';
 
 const App = () => {
   const { isLoggedIn } = useAuth();
-  const dispatch = useDispatch();
   const { isOpen, modalType } = useModal();
-  const Redirect = isLoggedIn ? <ChatPage /> : <Navigate to={routes.loginPagePath()} />;
 
-  useEffect(() => {
-    dispatch({ type: 'socket/connect' });
-  }, [dispatch]);
+  const Redirect = isLoggedIn ? <ChatPage /> : <Navigate to={routes.loginPagePath()} />;
 
   return (
     <>

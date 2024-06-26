@@ -16,7 +16,7 @@ const ChannelsList = () => {
   const channels = useSelector((state) => state.channels.channelsData);
   const { currentChannelId } = useSelector((state) => state.channels);
 
-  const onToggleChannel = (id) => () => dispatch(toggleChannel({ currentChannelId: Number(id) }));
+  const onToggleChannel = (id) => () => dispatch(toggleChannel({ currentChannelId: id }));
 
   useEffect(() => {
     const activeChannelRef = channelRefs.current[currentChannelId];
@@ -31,7 +31,7 @@ const ChannelsList = () => {
       className="scroll-area nav flex-column nav-pills nav-fill px-2 mb-3 overflow-auto h-100 d-block"
     >
       {channels.length > 0 && channels.map(({ name, id, removable }) => {
-        const variant = currentChannelId === Number(id) ? 'secondary' : null;
+        const variant = currentChannelId === id ? 'secondary' : null;
         if (removable) {
           return (
             <li
@@ -57,10 +57,10 @@ const ChannelsList = () => {
                   <span className="visually-hidden">Управление каналом</span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => showModal('delete', Number(id))}>
+                  <Dropdown.Item onClick={() => showModal('delete', id)}>
                     {t('chat.deleteChannelBtn')}
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => showModal('rename', Number(id))}>
+                  <Dropdown.Item onClick={() => showModal('rename', id)}>
                     {t('chat.renameChannelBtn')}
                   </Dropdown.Item>
                 </Dropdown.Menu>

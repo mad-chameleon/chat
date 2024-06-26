@@ -13,15 +13,14 @@ const MessagesList = () => {
   const { currentChannelId } = useSelector((state) => state.channels);
 
   const currentChannelMessages = messages.filter((msg) => msg.channelId === currentChannelId);
-  const currentChannel = channels.find(({ id }) => Number(id) === currentChannelId);
+  const currentChannel = channels.find(({ id }) => id === currentChannelId);
+  const messagesCount = currentChannelMessages.length;
 
   useEffect(() => {
     if (messagesBoxRef.current) {
       messagesBoxRef.current.scrollTop = messagesBoxRef.current.scrollHeight;
     }
   }, [messages, currentChannelId]);
-
-  const messagesCount = currentChannelMessages.length;
 
   return (
     <div className="d-flex flex-column h-100">

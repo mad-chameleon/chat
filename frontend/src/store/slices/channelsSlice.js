@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   channelsData: [],
-  currentChannelId: 1,
+  currentChannelId: '1',
 };
 
 /* eslint-disable */
@@ -18,7 +18,7 @@ const channelsSlice = createSlice({
     },
     addChannel: (state, { payload }) => {
       state.channelsData = [...state.channelsData, payload];
-      state.currentChannelId = Number(payload.id);
+      state.currentChannelId = payload.id;
     },
     renameChannel: (state, { payload }) => {
       const updatedChannelsData = state.channelsData.map(channel => {
@@ -33,6 +33,9 @@ const channelsSlice = createSlice({
       state.channelsData = updatedChannelsData;
     },
     removeChannel: (state, { payload }) => {
+      if (state.currentChannelId === payload.id) {
+        state.currentChannelId = '1';
+      }
       state.channelsData = state.channelsData.filter((channel) => channel.id !== payload.id);
     },
   },

@@ -4,14 +4,15 @@ import {
   FormControl,
   Button,
   Form,
+  Alert,
 } from 'react-bootstrap';
 import { useFormik } from 'formik';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { setLocale } from 'yup';
 import * as Yup from 'yup';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
 import { useModal } from '../../hooks/index';
 import routes from '../../routes';
@@ -26,6 +27,13 @@ const AddChannelModal = () => {
   const { userInfo: { token } } = useSelector((state) => state.user);
 
   const channelNames = channels.map(({ name }) => name);
+
+  const [formState, setFormState] = useState({});
+  const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   setLocale({
     mixed: {
@@ -50,26 +58,31 @@ const AddChannelModal = () => {
   const formik = useFormik({
     initialValues: { name: '' },
     validationSchema: addChannelSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      setSubmitting(true);
+      setFormState({});
       try {
-        const { data } = await axios.post(routes.channelsApiPath(), { name: values.name }, {
+        const { data, status } = await axios.post(routes.channelsApiPath(), { name: values.name }, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        dispatch(addChannel(data));
-        formik.resetForm();
-        hideModal();
+        if (status === 200) {
+          dispatch(addChannel(data));
+          resetForm();
+          hideModal();
+        }
       } catch (error) {
-        console.log('Failed to add new channel');
+        console.log('Failed to add new channel', error);
+        setSubmitting(false);
+        if (isAxiosError(error)) {
+          setFormState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
+        } else {
+          setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
+        }
       }
     },
   });
-
-  const inputRef = useRef();
-  useEffect(() => {
-    inputRef.current.focus();
-  }, []);
 
   return (
     <Modal centered show onHide={() => hideModal()}>
@@ -78,6 +91,7 @@ const AddChannelModal = () => {
       </Modal.Header>
 
       <Modal.Body>
+        {formState.isError && <Alert variant="danger">{formState.errorMessage}</Alert>}
         <Form onSubmit={formik.handleSubmit}>
           <FormGroup>
             <FormControl
@@ -88,6 +102,7 @@ const AddChannelModal = () => {
               value={formik.values.name}
               onChange={formik.handleChange}
               isInvalid={formik.errors.name && formik.touched.name}
+              disabled={formik.isSubmitting}
             />
             <Form.Label className="visually-hidden" htmlFor="name">{t('chat.channelName')}</Form.Label>
             <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
@@ -97,10 +112,17 @@ const AddChannelModal = () => {
                 variant="secondary"
                 className="me-2"
                 onClick={() => hideModal()}
+                disabled={formik.isSubmitting}
               >
                 {t('form.cancelBtn')}
               </Button>
-              <Button type="submit" variant="primary">{t('form.sendBtn')}</Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={formik.isSubmitting || formState.isError}
+              >
+                {t('form.sendBtn')}
+              </Button>
             </div>
           </FormGroup>
         </Form>

@@ -48,9 +48,14 @@ export default {
       },
     },
     errors: {
+      reload: 'Перезагрузите страницу.',
       routeErrors: {
         404: 'ОШИБКА 404',
         notFound: 'Cтраница не найдена',
+      },
+      formErrors: {
+        networkError: 'Ошибка сети.',
+        unknownError: 'Неизвестная ошибка.',
       },
       modalErrors: {
         notOneOf: 'Канал с таким именем уже существует',
