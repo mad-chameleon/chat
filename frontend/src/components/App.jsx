@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Navbar from './Navbar';
 import ErrorPage from '../pages/ErrorPage';
 import LoginPage from '../pages/LoginPage';
+import SignUpPage from '../pages/SignUpPage';
 import ChatPage from '../pages/ChatPage';
 import routes from '../routes';
 import { useAuth, useModal } from '../hooks';
@@ -22,6 +23,7 @@ const App = () => {
         <Routes>
           <Route path={routes.chatPagePath()} element={Redirect} />
           <Route path={routes.loginPagePath()} element={<LoginPage />} />
+          <Route path={routes.signupPagePath()} element={<SignUpPage />} />
           <Route path={routes.otherPagePath()} element={<ErrorPage />} />
         </Routes>
       </div>

@@ -22,6 +22,7 @@ const RenameChannelModal = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { channelId, hideModal } = useModal();
+
   const inputRef = useRef();
   const [formState, setFormState] = useState({});
 
@@ -30,6 +31,10 @@ const RenameChannelModal = () => {
 
   const channelNames = channels.map(({ name }) => name);
   const { name } = channels.find(({ id }) => Number(id) === Number(channelId));
+
+  useEffect(() => {
+    inputRef.current.select();
+  }, []);
 
   setLocale({
     mixed: {
@@ -67,28 +72,25 @@ const RenameChannelModal = () => {
             },
           },
         );
+
         if (status === 200) {
           resetForm();
           dispatch(renameChannel(data));
           hideModal();
         }
       } catch (error) {
-        console.log('Failed to rename a channel', error);
         setSubmitting(false);
         if (isAxiosError(error)) {
           setFormState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
-        } else {
-          setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
+          return;
         }
+        setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
       }
     },
   });
-  useEffect(() => {
-    inputRef.current.select();
-  }, []);
 
   return (
-    <Modal show onHide={() => hideModal()}>
+    <Modal centered show onHide={() => hideModal()}>
       <Modal.Header closeButton>
         <Modal.Title>{t('chat.renameChannel')}</Modal.Title>
       </Modal.Header>

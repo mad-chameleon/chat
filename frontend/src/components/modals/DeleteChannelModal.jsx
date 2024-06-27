@@ -6,7 +6,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import axios, {isAxiosError} from 'axios';
+import axios, { isAxiosError } from 'axios';
 
 import { useModal } from '../../hooks';
 import routes from '../../routes';
@@ -31,27 +31,28 @@ const DeleteChannelModal = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (status === 200) {
         hideModal();
         dispatch(removeChannel(data));
         setIsSubmitting(false);
       }
     } catch (error) {
-      console.log('Failed to delete a channel', error);
       setIsSubmitting(false);
       if (isAxiosError(error)) {
         setErrorState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
-      } else {
-        setErrorState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
+        return;
       }
+      setErrorState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
     }
   };
 
   return (
-    <Modal show onHide={() => hideModal()}>
+    <Modal centered show onHide={() => hideModal()}>
       <Modal.Header closeButton>
         <Modal.Title>{t('chat.deleteChannel')}</Modal.Title>
       </Modal.Header>
+
       <Modal.Body>
         {errorState.isError && <Alert variant="danger">{errorState.errorMessage}</Alert>}
         <p>{t('questions.confirmChannelDeletion')}</p>

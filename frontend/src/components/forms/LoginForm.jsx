@@ -1,6 +1,6 @@
 import { Form, Button, FloatingLabel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import axios, { AxiosError } from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useRef, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
@@ -14,8 +14,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const inputRef = useRef();
-
-  const [authFailed, setAuthFailed] = useState(false);
+  const [formState, setFormState] = useState({});
 
   useEffect(() => {
     inputRef.current.focus();
@@ -27,19 +26,25 @@ const LoginForm = () => {
       password: '',
     },
     onSubmit: async (values, { setSubmitting }) => {
-      setAuthFailed(false);
+      setSubmitting(true);
+      setFormState({});
       try {
         const { data } = await axios.post(routes.signInApiPath(), values);
         auth.logIn(data);
         navigate(routes.chatPagePath());
+        setSubmitting(false);
       } catch (error) {
         setSubmitting(false);
-        if (error instanceof AxiosError && error.response.status === 401) {
-          setAuthFailed(true);
-          inputRef.current.select();
+        if (isAxiosError(error)) {
+          if (error.response.status === 401) {
+            setFormState({ isError: true, errorMessage: t('errors.loginFailed') });
+            inputRef.current.select();
+            return;
+          }
+          setFormState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
           return;
         }
-        throw (error);
+        setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
       }
     },
   });
@@ -57,7 +62,8 @@ const LoginForm = () => {
           required
           value={formik.values.username}
           onChange={formik.handleChange}
-          isInvalid={authFailed}
+          isInvalid={formState.isError}
+          disabled={formik.isSubmitting}
         />
       </FloatingLabel>
       <FloatingLabel label={t('form.fields.password')} className="mb-4" controlId="password">
@@ -67,11 +73,17 @@ const LoginForm = () => {
           placeholder={t('form.fields.password')}
           required
           onChange={formik.handleChange}
-          isInvalid={authFailed}
+          isInvalid={formState.isError}
+          disabled={formik.isSubmitting}
         />
-        <Form.Control.Feedback type="invalid" tooltip>{t('errors.loginFailed')}</Form.Control.Feedback>
+        <Form.Control.Feedback type="invalid" tooltip>{formState.errorMessage}</Form.Control.Feedback>
       </FloatingLabel>
-      <Button variant="outline-primary" type="submit" className="w-100 mb-3">
+      <Button
+        variant="outline-primary"
+        type="submit"
+        className="w-100 mb-3"
+        disabled={formik.isSubmitting}
+      >
         {t('form.signInBtn')}
       </Button>
     </Form>

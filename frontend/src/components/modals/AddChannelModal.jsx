@@ -67,19 +67,19 @@ const AddChannelModal = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+
         if (status === 200) {
           dispatch(addChannel(data));
           resetForm();
           hideModal();
         }
       } catch (error) {
-        console.log('Failed to add new channel', error);
         setSubmitting(false);
         if (isAxiosError(error)) {
           setFormState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
-        } else {
-          setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
+          return;
         }
+        setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
       }
     },
   });

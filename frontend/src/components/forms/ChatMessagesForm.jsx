@@ -49,19 +49,18 @@ const ChatMessagesForm = () => {
           resetForm();
         }
       } catch (error) {
-        console.log('Failed to send a message', error);
         setSubmitting(false);
         if (isAxiosError(error)) {
           setFormState({
             isError: true,
-            errorMessage: `${t('errors.formErrors.networkError')} ${t('errors.reload')}`,
+            errorMessage: t('errors.formErrors.networkError'),
           });
-        } else {
-          setFormState({
-            isError: true,
-            errorMessage: `${t('errors.formErrors.unknownError')} ${t('errors.reload')}`,
-          });
+          return;
         }
+        setFormState({
+          isError: true,
+          errorMessage: t('errors.formErrors.unknownError'),
+        });
       }
     },
   });

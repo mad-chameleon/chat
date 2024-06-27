@@ -54,8 +54,8 @@ export default {
         notFound: 'Cтраница не найдена',
       },
       formErrors: {
-        networkError: 'Ошибка сети.',
-        unknownError: 'Неизвестная ошибка.',
+        networkError: 'Ошибка сети',
+        unknownError: 'Неизвестная ошибка',
       },
       modalErrors: {
         notOneOf: 'Канал с таким именем уже существует',
@@ -67,12 +67,12 @@ export default {
         min: 'От 3 до 20 символов',
         max: 'От 3 до 20 символов',
         oneOf: 'Пароли должны совпадать',
-        registrationFailed: 'Такой пользователь уже существует',
+        userExists: 'Такой пользователь уже существует',
         password: {
           min: 'Не менее 6 символов',
         },
       },
-      required: 'Это обязательное поле',
+      required: 'Обязательное поле',
       loginFailed: 'Неверные имя пользователя или пароль',
     },
     footer: {
