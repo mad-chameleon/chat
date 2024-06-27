@@ -1,17 +1,17 @@
 import {
-  Alert,
   Button,
   Form,
   FormControl,
   FormGroup,
   Modal,
 } from 'react-bootstrap';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { setLocale } from 'yup';
 import * as Yup from 'yup';
 import axios, { isAxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 import { useFormik } from 'formik';
 import { useModal } from '../../hooks';
@@ -24,7 +24,6 @@ const RenameChannelModal = () => {
   const { channelId, hideModal } = useModal();
 
   const inputRef = useRef();
-  const [formState, setFormState] = useState({});
 
   const channels = useSelector((state) => state.channels.channelsData);
   const { userInfo: { token } } = useSelector((state) => state.user);
@@ -61,7 +60,6 @@ const RenameChannelModal = () => {
     validationSchema: renameChannelSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
-      setFormState({});
       try {
         const { status, data } = await axios.patch(
           routes.editChannelApiPath(channelId),
@@ -77,14 +75,15 @@ const RenameChannelModal = () => {
           resetForm();
           dispatch(renameChannel(data));
           hideModal();
+          toast.success(t('toasts.channelRenamed'));
         }
       } catch (error) {
         setSubmitting(false);
         if (isAxiosError(error)) {
-          setFormState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
+          toast.error(t('errors.formErrors.networkError'));
           return;
         }
-        setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
+        toast.error(t('errors.formErrors.unknownError'));
       }
     },
   });
@@ -96,7 +95,6 @@ const RenameChannelModal = () => {
       </Modal.Header>
 
       <Modal.Body>
-        {formState.isError && <Alert variant="danger">{formState.errorMessage}</Alert>}
         <Form onSubmit={formik.handleSubmit}>
           <FormGroup>
             <FormControl
@@ -124,7 +122,7 @@ const RenameChannelModal = () => {
               <Button
                 type="submit"
                 variant="primary"
-                disabled={formik.isSubmitting || formState.isError}
+                disabled={formik.isSubmitting}
               >
                 {t('chat.renameChannelBtn')}
               </Button>

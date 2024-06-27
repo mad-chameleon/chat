@@ -1,5 +1,6 @@
 import '../index.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 
 import Navbar from './Navbar';
 import ErrorPage from '../pages/ErrorPage';
@@ -28,6 +29,7 @@ const App = () => {
         </Routes>
       </div>
       { isOpen && modals[modalType] }
+      <ToastContainer />
     </>
   );
 };

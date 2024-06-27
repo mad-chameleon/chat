@@ -4,15 +4,15 @@ import {
   FormControl,
   Button,
   Form,
-  Alert,
 } from 'react-bootstrap';
 import { useFormik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { setLocale } from 'yup';
 import * as Yup from 'yup';
 import axios, { isAxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 import { useModal } from '../../hooks/index';
 import routes from '../../routes';
@@ -28,7 +28,6 @@ const AddChannelModal = () => {
 
   const channelNames = channels.map(({ name }) => name);
 
-  const [formState, setFormState] = useState({});
   const inputRef = useRef();
 
   useEffect(() => {
@@ -60,7 +59,6 @@ const AddChannelModal = () => {
     validationSchema: addChannelSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
-      setFormState({});
       try {
         const { data, status } = await axios.post(routes.channelsApiPath(), { name: values.name }, {
           headers: {
@@ -72,14 +70,15 @@ const AddChannelModal = () => {
           dispatch(addChannel(data));
           resetForm();
           hideModal();
+          toast.success(t('toasts.channelCreated'));
         }
       } catch (error) {
         setSubmitting(false);
         if (isAxiosError(error)) {
-          setFormState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
+          toast.error(t('errors.formErrors.networkError'));
           return;
         }
-        setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
+        toast.error(t('errors.formErrors.unknownError'));
       }
     },
   });
@@ -91,7 +90,6 @@ const AddChannelModal = () => {
       </Modal.Header>
 
       <Modal.Body>
-        {formState.isError && <Alert variant="danger">{formState.errorMessage}</Alert>}
         <Form onSubmit={formik.handleSubmit}>
           <FormGroup>
             <FormControl
@@ -119,7 +117,7 @@ const AddChannelModal = () => {
               <Button
                 type="submit"
                 variant="primary"
-                disabled={formik.isSubmitting || formState.isError}
+                disabled={formik.isSubmitting}
               >
                 {t('form.sendBtn')}
               </Button>

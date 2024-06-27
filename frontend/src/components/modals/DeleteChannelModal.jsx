@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import axios, { isAxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 import { useModal } from '../../hooks';
 import routes from '../../routes';
@@ -35,15 +36,16 @@ const DeleteChannelModal = () => {
       if (status === 200) {
         hideModal();
         dispatch(removeChannel(data));
+        toast.success(t('toasts.channelDeleted'));
         setIsSubmitting(false);
       }
     } catch (error) {
       setIsSubmitting(false);
       if (isAxiosError(error)) {
-        setErrorState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
+        toast.error(t('errors.formErrors.networkError'));
         return;
       }
-      setErrorState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
+      toast.error(t('errors.formErrors.unknownError'));
     }
   };
 
