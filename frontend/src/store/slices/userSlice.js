@@ -4,6 +4,7 @@ const initialState = {
   userInfo: {},
 };
 
+/* eslint-disable */
 const userSlice = createSlice({
   name: 'user',
   initialState,

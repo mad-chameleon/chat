@@ -2,6 +2,7 @@ import { Container, Button, Navbar as NavbarComponent } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '../hooks/index';
+import routes from '../routes';
 
 const Navbar = () => {
   const { isLoggedIn, logOut } = useAuth();
@@ -10,7 +11,7 @@ const Navbar = () => {
   return (
     <NavbarComponent expand="lg" className="shadow-sm bg-white">
       <Container>
-        <NavbarComponent.Brand href="/"> Hexlet Chat </NavbarComponent.Brand>
+        <NavbarComponent.Brand href={routes.chatPagePath()}> Hexlet Chat </NavbarComponent.Brand>
         { isLoggedIn && (
           <Button variant="primary" onClick={() => logOut()}>
             {t('chat.logoutBtn')}

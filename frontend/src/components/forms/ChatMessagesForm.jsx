@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import axios, { isAxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 import filterProfanityWords from '../../dictionary';
 import routes from '../../routes';
@@ -51,16 +52,10 @@ const ChatMessagesForm = () => {
       } catch (error) {
         setSubmitting(false);
         if (isAxiosError(error)) {
-          setFormState({
-            isError: true,
-            errorMessage: t('errors.formErrors.networkError'),
-          });
+          toast.error(t('errors.formErrors.networkError'));
           return;
         }
-        setFormState({
-          isError: true,
-          errorMessage: t('errors.formErrors.unknownError'),
-        });
+        toast.error(t('errors.formErrors.unknownError'));
       }
     },
   });

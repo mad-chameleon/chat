@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { setLocale } from 'yup';
 import * as Yup from 'yup';
 import axios, { isAxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 import { useAuth } from '../../hooks/index';
 import routes from '../../routes.js';
@@ -71,10 +72,10 @@ const SignUpForm = () => {
             inputRef.current.select();
             return;
           }
-          setFormState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
+          toast.error(t('errors.formErrors.networkError'));
           return;
         }
-        setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
+        toast.error(t('errors.formErrors.unknownError'));
       }
     },
   });

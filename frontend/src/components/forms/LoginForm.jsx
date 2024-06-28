@@ -4,6 +4,7 @@ import axios, { isAxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useRef, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
 
 import { useAuth } from '../../hooks';
 import routes from '../../routes';
@@ -41,10 +42,10 @@ const LoginForm = () => {
             inputRef.current.select();
             return;
           }
-          setFormState({ isError: true, errorMessage: t('errors.formErrors.networkError') });
+          toast.error(t('errors.formErrors.networkError'));
           return;
         }
-        setFormState({ isError: true, errorMessage: t('errors.formErrors.unknownError') });
+        toast.error(t('errors.formErrors.unknownError'));
       }
     },
   });
