@@ -51,6 +51,7 @@ const AddChannelModal = () => {
       .required()
       .min(3)
       .max(20)
+      .transform((channelName) => channelName.trim())
       .notOneOf(channelNames),
   });
 
@@ -60,7 +61,8 @@ const AddChannelModal = () => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
       try {
-        const { data, status } = await axios.post(routes.channelsApiPath(), { name: values.name }, {
+        const preparedData = { name: values.name.trim() };
+        const { data, status } = await axios.post(routes.channelsApiPath(), preparedData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

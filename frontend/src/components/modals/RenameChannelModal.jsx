@@ -52,6 +52,7 @@ const RenameChannelModal = () => {
       .required()
       .min(3)
       .max(20)
+      .transform((channelName) => channelName.trim())
       .notOneOf(channelNames),
   });
 
@@ -61,9 +62,10 @@ const RenameChannelModal = () => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
       try {
+        const preparedData = { name: values.name.trim() };
         const { status, data } = await axios.patch(
           routes.editChannelApiPath(channelId),
-          { name: values.name },
+          preparedData,
           {
             headers: {
               Authorization: `Bearer ${token}`,

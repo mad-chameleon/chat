@@ -54,14 +54,14 @@ export default {
         notFound: 'Cтраница не найдена',
       },
       formErrors: {
-        networkError: 'Ошибка сети',
+        networkError: 'Ошибка соединения',
         unknownError: 'Неизвестная ошибка',
       },
       modalErrors: {
         notOneOf: 'Должно быть уникальным',
         required: 'Введите имя канала',
         min: 'От 3 до 20 символов',
-        max: 'Максимальная длина имени канала - 20 символов',
+        max: 'От 3 до 20 символов',
       },
       registrationErrors: {
         min: 'От 3 до 20 символов',
