@@ -4,18 +4,16 @@ import {
   Modal,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import axios, { isAxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
 import { useModal } from '../../hooks';
 import routes from '../../routes';
-import { removeChannel } from '../../store/slices/channelsSlice';
 
 const DeleteChannelModal = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const { channelId, hideModal } = useModal();
 
   const { userInfo: { token } } = useSelector((state) => state.user);
@@ -27,17 +25,16 @@ const DeleteChannelModal = () => {
     try {
       setIsSubmitting(true);
       setErrorState({});
-      const { status, data } = await axios.delete(routes.editChannelApiPath(channelId), {
+      const { status } = await axios.delete(routes.editChannelApiPath(channelId), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (status === 200) {
-        hideModal();
-        dispatch(removeChannel(data));
-        toast.success(t('toasts.channelDeleted'));
         setIsSubmitting(false);
+        hideModal();
+        toast.success(t('toasts.channelDeleted'));
       }
     } catch (error) {
       setIsSubmitting(false);

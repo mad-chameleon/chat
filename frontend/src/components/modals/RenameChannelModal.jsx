@@ -6,21 +6,21 @@ import {
   Modal,
 } from 'react-bootstrap';
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { setLocale } from 'yup';
 import * as Yup from 'yup';
 import axios, { isAxiosError } from 'axios';
 import { toast } from 'react-toastify';
-
 import { useFormik } from 'formik';
+
 import { useModal } from '../../hooks';
 import routes from '../../routes';
-import { renameChannel } from '../../store/slices/channelsSlice';
+import filterProfanityWords from '../../dictionary';
 
 const RenameChannelModal = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+
   const { channelId, hideModal } = useModal();
 
   const inputRef = useRef();
@@ -62,8 +62,8 @@ const RenameChannelModal = () => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
       try {
-        const preparedData = { name: values.name.trim() };
-        const { status, data } = await axios.patch(
+        const preparedData = { name: filterProfanityWords(values.name.trim()) };
+        const { status } = await axios.patch(
           routes.editChannelApiPath(channelId),
           preparedData,
           {
@@ -74,8 +74,8 @@ const RenameChannelModal = () => {
         );
 
         if (status === 200) {
+          setSubmitting(false);
           resetForm();
-          dispatch(renameChannel(data));
           hideModal();
           toast.success(t('toasts.channelRenamed'));
         }
@@ -109,7 +109,7 @@ const RenameChannelModal = () => {
               isInvalid={formik.errors.name && formik.touched.name}
               disabled={formik.isSubmitting}
             />
-            <Form.Label className="visually-hidden" htmlFor="name" />
+            <Form.Label className="visually-hidden" htmlFor="name">{t('chat.channelName')}</Form.Label>
             <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
             <div className="d-flex justify-content-end">
               <Button

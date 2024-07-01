@@ -1,18 +1,16 @@
 import { Button, Form, Alert } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import axios, { isAxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
 import filterProfanityWords from '../../dictionary';
 import routes from '../../routes';
-import { addMessage } from '../../store/slices/messagesSlice';
 
 const ChatMessagesForm = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
 
   const { currentChannelId } = useSelector((state) => state.channels);
   const { messages } = useSelector((state) => state.messages);
@@ -39,14 +37,14 @@ const ChatMessagesForm = () => {
           channelId: currentChannelId,
           username,
         };
-        const { status, data } = await axios.post(routes.messagesApiPath(), preparedData, {
+        const { status } = await axios.post(routes.messagesApiPath(), preparedData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
         if (status === 200) {
-          dispatch(addMessage(data));
+          setSubmitting(false);
           resetForm();
         }
       } catch (error) {
@@ -84,7 +82,6 @@ const ChatMessagesForm = () => {
         </Form.Group>
       </Form>
     </>
-
   );
 };
 

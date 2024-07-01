@@ -5,7 +5,7 @@ export default {
     },
     toasts: {
       channelCreated: 'Канал создан',
-      channelDeleted: 'Канал удален',
+      channelDeleted: 'Канал удалён',
       channelRenamed: 'Канал переименован',
     },
     questions: {

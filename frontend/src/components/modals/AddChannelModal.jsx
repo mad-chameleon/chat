@@ -16,7 +16,8 @@ import { toast } from 'react-toastify';
 
 import { useModal } from '../../hooks/index';
 import routes from '../../routes';
-import { addChannel } from '../../store/slices/channelsSlice';
+import { setCurrentChannelId, setLastAddedBy } from '../../store/slices/channelsSlice';
+import filterProfanityWords from '../../dictionary';
 
 const AddChannelModal = () => {
   const { t } = useTranslation();
@@ -24,7 +25,7 @@ const AddChannelModal = () => {
   const { hideModal } = useModal();
 
   const channels = useSelector((state) => state.channels.channelsData);
-  const { userInfo: { token } } = useSelector((state) => state.user);
+  const { userInfo: { token, username } } = useSelector((state) => state.user);
 
   const channelNames = channels.map(({ name }) => name);
 
@@ -61,18 +62,20 @@ const AddChannelModal = () => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
       try {
-        const preparedData = { name: values.name.trim() };
-        const { data, status } = await axios.post(routes.channelsApiPath(), preparedData, {
+        const preparedData = { name: filterProfanityWords(values.name.trim()) };
+        const { status, data: { id } } = await axios.post(routes.channelsApiPath(), preparedData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
         if (status === 200) {
-          dispatch(addChannel(data));
+          setSubmitting(false);
+          dispatch(setCurrentChannelId({ id, name: username }));
+          dispatch(setLastAddedBy({ name: username }));
           resetForm();
-          hideModal();
           toast.success(t('toasts.channelCreated'));
+          hideModal();
         }
       } catch (error) {
         setSubmitting(false);

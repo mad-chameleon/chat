@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   channelsData: [],
   currentChannelId: '1',
+  lastAddedBy: null,
 };
 
 /* eslint-disable */
@@ -18,7 +19,15 @@ const channelsSlice = createSlice({
     },
     addChannel: (state, { payload }) => {
       state.channelsData = [...state.channelsData, payload];
+    },
+    setCurrentChannelId : (state, { payload }) => {
+      if (state.lastAddedBy !== payload.name) {
+        state.currentChannelId = payload.id;
+      }
       state.currentChannelId = payload.id;
+    },
+    setLastAddedBy: (state, { payload }) => {
+      state.lastAddedBy = payload.name;
     },
     renameChannel: (state, { payload }) => {
       const updatedChannelsData = state.channelsData.map(channel => {
@@ -47,6 +56,8 @@ export const {
   addChannel,
   renameChannel,
   removeChannel,
+  setCurrentChannelId,
+  setLastAddedBy,
 } = channelsSlice.actions;
 
 export default channelsSlice.reducer;
