@@ -11,13 +11,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { setLocale } from 'yup';
 import * as Yup from 'yup';
-import axios, { isAxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
 import { useModal } from '../../hooks/index';
-import routes from '../../routes';
 import { setCurrentChannelId, setLastAddedBy } from '../../store/slices/channelsSlice';
 import filterProfanityWords from '../../dictionary';
+import { useFetchChannelMutation } from '../../services/channelsApi';
+import handleFetchErrors from '../../utils';
 
 const AddChannelModal = () => {
   const { t } = useTranslation();
@@ -25,11 +25,13 @@ const AddChannelModal = () => {
   const { hideModal } = useModal();
 
   const channels = useSelector((state) => state.channels.channelsData);
-  const { userInfo: { token, username } } = useSelector((state) => state.user);
+  const { userInfo: { username } } = useSelector((state) => state.user);
 
   const channelNames = channels.map(({ name }) => name);
 
   const inputRef = useRef();
+
+  const [fetchChannel, { isLoading: isAddingChannel }] = useFetchChannelMutation();
 
   useEffect(() => {
     inputRef.current.focus();
@@ -59,32 +61,18 @@ const AddChannelModal = () => {
   const formik = useFormik({
     initialValues: { name: '' },
     validationSchema: addChannelSchema,
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
+    onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
-      try {
-        const preparedData = { name: filterProfanityWords(values.name.trim()) };
-        const { status, data: { id } } = await axios.post(routes.channelsApiPath(), preparedData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (status === 200) {
-          setSubmitting(false);
-          dispatch(setCurrentChannelId({ id, name: username }));
-          dispatch(setLastAddedBy({ name: username }));
-          resetForm();
-          toast.success(t('toasts.channelCreated'));
-          hideModal();
-        }
-      } catch (error) {
-        setSubmitting(false);
-        if (isAxiosError(error)) {
-          toast.error(t('errors.formErrors.networkError'));
-          return;
-        }
-        toast.error(t('errors.formErrors.unknownError'));
+      const preparedData = { name: filterProfanityWords(values.name.trim()) };
+      const { data, error } = await fetchChannel(preparedData);
+      if (error) {
+        handleFetchErrors(error, t);
+        return;
       }
+      hideModal();
+      dispatch(setCurrentChannelId({ id: data.id, name: username }));
+      dispatch(setLastAddedBy({ name: username }));
+      toast.success(t('toasts.channelCreated'));
     },
   });
 
@@ -105,7 +93,7 @@ const AddChannelModal = () => {
               value={formik.values.name}
               onChange={formik.handleChange}
               isInvalid={formik.errors.name && formik.touched.name}
-              disabled={formik.isSubmitting}
+              disabled={isAddingChannel}
             />
             <Form.Label className="visually-hidden" htmlFor="name">{t('chat.channelName')}</Form.Label>
             <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
@@ -115,14 +103,14 @@ const AddChannelModal = () => {
                 variant="secondary"
                 className="me-2"
                 onClick={() => hideModal()}
-                disabled={formik.isSubmitting}
+                disabled={isAddingChannel}
               >
                 {t('form.cancelBtn')}
               </Button>
               <Button
                 type="submit"
                 variant="primary"
-                disabled={formik.isSubmitting}
+                disabled={isAddingChannel}
               >
                 {t('form.sendBtn')}
               </Button>

@@ -11,11 +11,8 @@ const channelsSlice = createSlice({
   name: 'channels',
   initialState,
   reducers: {
-    fetchChannels: (state, { payload }) => {
+    setChannelsData: (state, { payload }) => {
       state.channelsData = payload;
-    },
-    toggleChannel: (state, { payload }) => {
-      state.currentChannelId = payload.currentChannelId;
     },
     addChannel: (state, { payload }) => {
       state.channelsData = [...state.channelsData, payload];
@@ -51,8 +48,7 @@ const channelsSlice = createSlice({
 });
 
 export const {
-  fetchChannels,
-  toggleChannel,
+  setChannelsData,
   addChannel,
   renameChannel,
   removeChannel,

@@ -12,8 +12,8 @@ export const AuthProvider = ({ children }) => {
   });
 
   const logIn = (data) => {
-    dispatch(fetchUserData(data));
     localStorage.setItem('userData', JSON.stringify(data));
+    dispatch(fetchUserData(data));
     setIsLoggedIn(true);
   };
 

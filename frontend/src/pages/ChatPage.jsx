@@ -2,65 +2,63 @@ import {
   Button, Container, Col, Row, Spinner,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import axios, { isAxiosError } from 'axios';
-import { toast } from 'react-toastify';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-import routes from '../routes';
-import { fetchChannels } from '../store/slices/channelsSlice';
-import { fetchMessages } from '../store/slices/messagesSlice';
+import { setChannelsData } from '../store/slices/channelsSlice';
+import { setMessages } from '../store/slices/messagesSlice';
 import ChannelsList from '../components/ChannelsList';
 import MessagesList from '../components/MessagesList';
 import { useModal } from '../hooks';
+import { useFetchChannelsQuery } from '../services/channelsApi';
+import { useFetchMessagesQuery } from '../services/messagesApi';
+import handleFetchErrors from '../utils';
 
 const ChatPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { showModal } = useModal();
-  const { userInfo: { token } } = useSelector((state) => state.user);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    data: channelsData = [],
+    isLoading: isLoadingChannels,
+    error: channelsError,
+  } = useFetchChannelsQuery();
+
+  const {
+    data: messagesData = [],
+    isLoading: isLoadingMessages,
+    error: messagesError,
+  } = useFetchMessagesQuery();
 
   useEffect(() => {
-    const getInitialData = async () => {
-      const params = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+    if (channelsError || messagesError) {
+      console.error('Fetching initial data failed');
+      handleFetchErrors(channelsError, t);
+    }
+  }, [channelsError, messagesError]);
 
-      try {
-        setIsLoading(true);
-        const [{ data: channelsData }, { data: messagesData }] = await Promise.all([
-          axios.get(routes.channelsApiPath(), params),
-          axios.get(routes.messagesApiPath(), params),
-        ]);
-
-        dispatch(fetchChannels(channelsData));
-        dispatch(fetchMessages(messagesData));
-      } catch (error) {
-        if (isAxiosError(error)) {
-          toast.error(t('errors.formErrors.networkError'));
-          return;
-        }
-        toast.error(t('errors.formErrors.unknownError'));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getInitialData();
-  }, [dispatch]);
+  useEffect(() => {
+    if (!isLoadingChannels && !isLoadingMessages) {
+      dispatch(setChannelsData(channelsData));
+      dispatch(setMessages(messagesData));
+    }
+  }, [
+    dispatch,
+    channelsData,
+    messagesData,
+    isLoadingChannels,
+    isLoadingMessages,
+  ]);
 
   return (
     <>
-      {isLoading && (
+      {isLoadingChannels && isLoadingMessages && (
         <div className="vh-100 d-flex justify-content-center align-items-center">
           <Spinner animation="border" variant="primary" />
         </div>
       )}
-      {!isLoading && (
+      {!isLoadingChannels && !isLoadingMessages && (
         <Container className="h-100 my-4 overflow-hidden rounded shadow">
           <Row className="h-100 bg-white flex-md-row">
             <div className="d-flex bg-light col-4 col-md-2 border-end px-0 flex-column h-100">
@@ -87,7 +85,6 @@ const ChatPage = () => {
         </Container>
       )}
     </>
-
   );
 };
 

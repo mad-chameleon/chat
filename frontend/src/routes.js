@@ -5,11 +5,13 @@ export default {
   signupPagePath: () => '/signup',
   otherPagePath: () => '*',
 
+  baseApiPath: () => apiPath,
+
   signInApiPath: () => [apiPath, 'login'].join('/'),
   signUpApiPath: () => [apiPath, 'signup'].join('/'),
-  channelsApiPath: () => [apiPath, 'channels'].join('/'),
-  editChannelApiPath: (id) => [apiPath, 'channels', `${id}`].join('/'),
-  messagesApiPath: () => [apiPath, 'messages'].join('/'),
+  channelsApiPath: () => ['/channels'].join('/'),
+  editChannelApiPath: (id) => ['/channels', `${id}`].join('/'),
+  messagesApiPath: () => ['/messages'].join('/'),
 
   newMessagePath: () => 'newMessage',
   newChannelPath: () => 'newChannel',

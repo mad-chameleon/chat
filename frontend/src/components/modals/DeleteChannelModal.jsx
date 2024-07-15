@@ -1,49 +1,39 @@
 import {
-  Alert,
   Button,
   Modal,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useState } from 'react';
-import axios, { isAxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
 import { useModal } from '../../hooks';
-import routes from '../../routes';
+// eslint-disable-next-line import/named
+import { useFetchDeleteChannelMutation } from '../../services/channelsApi';
+import handleFetchErrors from '../../utils';
 
 const DeleteChannelModal = () => {
   const { t } = useTranslation();
   const { channelId, hideModal } = useModal();
 
-  const { userInfo: { token } } = useSelector((state) => state.user);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorState, setErrorState] = useState({});
+
+  const [fetchDeleteChannel] = useFetchDeleteChannelMutation({
+    onError: (error) => {
+      handleFetchErrors(error, t);
+    },
+  });
 
   const onHandleDeleteChannel = async () => {
-    try {
-      setIsSubmitting(true);
-      setErrorState({});
-      const { status } = await axios.delete(routes.editChannelApiPath(channelId), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    setIsSubmitting(true);
 
-      if (status === 200) {
-        setIsSubmitting(false);
-        hideModal();
-        toast.success(t('toasts.channelDeleted'));
-      }
-    } catch (error) {
-      setIsSubmitting(false);
-      if (isAxiosError(error)) {
-        toast.error(t('errors.formErrors.networkError'));
-        return;
-      }
-      toast.error(t('errors.formErrors.unknownError'));
+    const { error } = await fetchDeleteChannel({ channelId });
+    if (error) {
+      handleFetchErrors(error, t);
+      return;
     }
+    setIsSubmitting(false);
+    hideModal();
+    toast.success(t('toasts.channelDeleted'));
   };
 
   return (
@@ -53,7 +43,6 @@ const DeleteChannelModal = () => {
       </Modal.Header>
 
       <Modal.Body>
-        {errorState.isError && <Alert variant="danger">{errorState.errorMessage}</Alert>}
         <p>{t('questions.confirmChannelDeletion')}</p>
         <div className="d-flex justify-content-end">
           <Button
@@ -69,7 +58,7 @@ const DeleteChannelModal = () => {
             type="submit"
             variant="danger"
             onClick={onHandleDeleteChannel}
-            disabled={isSubmitting || errorState.isError}
+            disabled={isSubmitting}
           >
             {t('form.deleteBtn')}
           </Button>

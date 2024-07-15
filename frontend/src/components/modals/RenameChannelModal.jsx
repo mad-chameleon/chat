@@ -10,13 +10,13 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { setLocale } from 'yup';
 import * as Yup from 'yup';
-import axios, { isAxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 
 import { useModal } from '../../hooks';
-import routes from '../../routes';
 import filterProfanityWords from '../../dictionary';
+import { useFetchRenameChannelMutation } from '../../services/channelsApi';
+import handleFetchErrors from '../../utils';
 
 const RenameChannelModal = () => {
   const { t } = useTranslation();
@@ -26,10 +26,15 @@ const RenameChannelModal = () => {
   const inputRef = useRef();
 
   const channels = useSelector((state) => state.channels.channelsData);
-  const { userInfo: { token } } = useSelector((state) => state.user);
 
   const channelNames = channels.map(({ name }) => name);
   const { name } = channels.find(({ id }) => Number(id) === Number(channelId));
+
+  const [fetchRenameChannel] = useFetchRenameChannelMutation({
+    onError: (error) => {
+      handleFetchErrors(error, t);
+    },
+  });
 
   useEffect(() => {
     inputRef.current.select();
@@ -61,32 +66,16 @@ const RenameChannelModal = () => {
     validationSchema: renameChannelSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
-      try {
-        const preparedData = { name: filterProfanityWords(values.name.trim()) };
-        const { status } = await axios.patch(
-          routes.editChannelApiPath(channelId),
-          preparedData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+      const preparedData = { name: filterProfanityWords(values.name.trim()), channelId };
 
-        if (status === 200) {
-          setSubmitting(false);
-          resetForm();
-          hideModal();
-          toast.success(t('toasts.channelRenamed'));
-        }
-      } catch (error) {
-        setSubmitting(false);
-        if (isAxiosError(error)) {
-          toast.error(t('errors.formErrors.networkError'));
-          return;
-        }
-        toast.error(t('errors.formErrors.unknownError'));
+      const { error } = await fetchRenameChannel(preparedData);
+      if (error) {
+        handleFetchErrors(error, t);
+        return;
       }
+      resetForm();
+      hideModal();
+      toast.success(t('toasts.channelRenamed'));
     },
   });
 

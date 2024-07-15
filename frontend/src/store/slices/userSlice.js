@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  userInfo: {},
+  userInfo: JSON.parse(localStorage.getItem('userData')) || null,
 };
 
 /* eslint-disable */

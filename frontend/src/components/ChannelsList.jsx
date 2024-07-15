@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { toggleChannel } from '../store/slices/channelsSlice';
+import { setCurrentChannelId } from '../store/slices/channelsSlice';
 import { useModal } from '../hooks';
 
 const ChannelsList = () => {
@@ -16,7 +16,7 @@ const ChannelsList = () => {
   const channels = useSelector((state) => state.channels.channelsData);
   const { currentChannelId } = useSelector((state) => state.channels);
 
-  const onToggleChannel = (id) => () => dispatch(toggleChannel({ currentChannelId: id }));
+  const onToggleChannel = (id) => () => dispatch(setCurrentChannelId({ id }));
 
   useEffect(() => {
     const activeChannelRef = channelRefs.current[currentChannelId];
