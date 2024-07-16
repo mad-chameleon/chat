@@ -3,13 +3,15 @@ import {
   Modal,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
+import { useSelector } from 'react-redux';
 import { useModal } from '../../hooks';
 // eslint-disable-next-line import/named
 import { useFetchDeleteChannelMutation } from '../../services/channelsApi';
 import handleFetchErrors from '../../utils';
+import usePrevious from '../../hooks/usePrevious';
 
 const DeleteChannelModal = () => {
   const { t } = useTranslation();
@@ -17,11 +19,8 @@ const DeleteChannelModal = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [fetchDeleteChannel] = useFetchDeleteChannelMutation({
-    onError: (error) => {
-      handleFetchErrors(error, t);
-    },
-  });
+  const [fetchDeleteChannel] = useFetchDeleteChannelMutation();
+  const channels = useSelector((state) => state.channels.channelsData);
 
   const onHandleDeleteChannel = async () => {
     setIsSubmitting(true);
@@ -29,12 +28,18 @@ const DeleteChannelModal = () => {
     const { error } = await fetchDeleteChannel({ channelId });
     if (error) {
       handleFetchErrors(error, t);
-      return;
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
-    hideModal();
-    toast.success(t('toasts.channelDeleted'));
   };
+
+  const prevChannelsLength = usePrevious(channels.length);
+
+  useEffect(() => {
+    if (prevChannelsLength !== undefined && channels.length < prevChannelsLength) {
+      hideModal();
+      toast.success(t('toasts.channelDeleted'));
+    }
+  }, [channels.length, prevChannelsLength]);
 
   return (
     <Modal centered show onHide={() => hideModal()}>

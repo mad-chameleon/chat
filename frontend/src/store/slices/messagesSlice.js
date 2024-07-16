@@ -3,7 +3,6 @@ import { removeChannel } from './channelsSlice.js';
 
 const initialState = {
   messages: [],
-  status: '',
 };
 
 /* eslint-disable */
@@ -16,10 +15,6 @@ const messagesSlice = createSlice({
     },
     addMessage: (state, { payload }) => {
       state.messages = [...state.messages, payload];
-      state.status = 'loaded';
-    },
-    setMessagesStatus: (state, { payload }) => {
-      state.status = payload;
     },
   },
   extraReducers: (builder) => {

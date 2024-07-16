@@ -6,15 +6,15 @@ import { useFormik } from 'formik';
 
 import filterProfanityWords from '../../dictionary';
 import { useFetchMessageMutation } from '../../services/messagesApi';
-import { setMessagesStatus } from '../../store/slices/messagesSlice';
 import handleFetchErrors from '../../utils';
+import usePrevious from '../../hooks/usePrevious';
 
 const ChatMessagesForm = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const { currentChannelId } = useSelector((state) => state.channels);
-  const { status } = useSelector((state) => state.messages);
+  const { messages } = useSelector((state) => state.messages);
   const { userInfo: { username } } = useSelector((state) => state.user);
 
   const inputRef = useRef();
@@ -27,7 +27,6 @@ const ChatMessagesForm = () => {
     },
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
-      dispatch(setMessagesStatus(''));
       const preparedData = {
         body: filterProfanityWords(values.body),
         channelId: currentChannelId,
@@ -40,17 +39,19 @@ const ChatMessagesForm = () => {
     },
   });
 
+  const prevMessagesLength = usePrevious(messages.length);
+
   useEffect(() => {
-    if (status === 'loaded') {
+    if (prevMessagesLength !== undefined && messages.length > prevMessagesLength) {
       formik.resetForm();
     }
-  }, [status]);
+  }, [messages.length, prevMessagesLength, dispatch]);
 
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, [currentChannelId, message]);
+  }, [currentChannelId, message, prevMessagesLength]);
 
   return (
     <Form onSubmit={formik.handleSubmit} noValidate className="py-1 border rounded-2" id="message-form">

@@ -18,6 +18,7 @@ import { setCurrentChannelId, setLastAddedBy } from '../../store/slices/channels
 import filterProfanityWords from '../../dictionary';
 import { useFetchChannelMutation } from '../../services/channelsApi';
 import handleFetchErrors from '../../utils';
+import usePrevious from '../../hooks/usePrevious';
 
 const AddChannelModal = () => {
   const { t } = useTranslation();
@@ -69,12 +70,19 @@ const AddChannelModal = () => {
         handleFetchErrors(error, t);
         return;
       }
-      hideModal();
       dispatch(setCurrentChannelId({ id: data.id, name: username }));
       dispatch(setLastAddedBy({ name: username }));
-      toast.success(t('toasts.channelCreated'));
     },
   });
+
+  const prevChannelsLength = usePrevious(channels.length);
+
+  useEffect(() => {
+    if (prevChannelsLength !== undefined && channels.length > prevChannelsLength) {
+      hideModal();
+      toast.success(t('toasts.channelCreated'));
+    }
+  }, [channels.length, prevChannelsLength, dispatch]);
 
   return (
     <Modal centered show onHide={() => hideModal()}>

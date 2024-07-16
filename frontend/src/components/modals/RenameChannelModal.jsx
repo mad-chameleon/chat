@@ -17,6 +17,7 @@ import { useModal } from '../../hooks';
 import filterProfanityWords from '../../dictionary';
 import { useFetchRenameChannelMutation } from '../../services/channelsApi';
 import handleFetchErrors from '../../utils';
+import usePrevious from '../../hooks/usePrevious';
 
 const RenameChannelModal = () => {
   const { t } = useTranslation();
@@ -30,11 +31,7 @@ const RenameChannelModal = () => {
   const channelNames = channels.map(({ name }) => name);
   const { name } = channels.find(({ id }) => Number(id) === Number(channelId));
 
-  const [fetchRenameChannel] = useFetchRenameChannelMutation({
-    onError: (error) => {
-      handleFetchErrors(error, t);
-    },
-  });
+  const [fetchRenameChannel] = useFetchRenameChannelMutation();
 
   useEffect(() => {
     inputRef.current.select();
@@ -74,10 +71,17 @@ const RenameChannelModal = () => {
         return;
       }
       resetForm();
-      hideModal();
-      toast.success(t('toasts.channelRenamed'));
     },
   });
+
+  const prevChannelName = usePrevious(name);
+
+  useEffect(() => {
+    if (prevChannelName !== undefined && name !== prevChannelName) {
+      hideModal();
+      toast.success(t('toasts.channelRenamed'));
+    }
+  }, [name, prevChannelName]);
 
   return (
     <Modal centered show onHide={() => hideModal()}>
