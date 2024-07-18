@@ -6,7 +6,7 @@ import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { setLocale } from 'yup';
 
 import App from './components/App';
-import { AuthProvider, ModalProvider } from './providers/index';
+import { AuthProvider, ModalProvider, SocketProvider } from './providers/index';
 import resources from './locales/index.js';
 import store from './store/index.js';
 
@@ -46,11 +46,13 @@ const init = async () => {
         <Provider store={store}>
           <AuthProvider>
             <ModalProvider>
-              <BrowserRouter>
-                <ErrorBoundary>
-                  <App />
-                </ErrorBoundary>
-              </BrowserRouter>
+              <SocketProvider>
+                <BrowserRouter>
+                  <ErrorBoundary>
+                    <App />
+                  </ErrorBoundary>
+                </BrowserRouter>
+              </SocketProvider>
             </ModalProvider>
           </AuthProvider>
         </Provider>

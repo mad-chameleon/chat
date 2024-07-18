@@ -17,6 +17,7 @@ export default {
       addChannel: 'Добавить канал',
       deleteChannel: 'Удалить канал',
       renameChannel: 'Переименовать канал',
+      channelControl: 'Управление каналом',
       addChannelBtn: '+',
       deleteChannelBtn: 'Удалить',
       renameChannelBtn: 'Переименовать',
