@@ -13,9 +13,8 @@ import { useFormik } from 'formik';
 import { useModal } from '../../hooks';
 import filterProfanityWords from '../../dictionary';
 import { useFetchRenameChannelMutation } from '../../services/channelsApi';
-import handleFetchErrors from '../../utils';
+import handleFetchErrors, { setChannelSchema } from '../../utils';
 import usePrevious from '../../hooks/usePrevious';
-import useChannelSchema from '../../hooks/useChannelSchema';
 
 const RenameChannelModal = () => {
   const { t } = useTranslation();
@@ -35,7 +34,7 @@ const RenameChannelModal = () => {
     inputRef.current.select();
   }, []);
 
-  const renameChannelSchema = useChannelSchema(channelNames);
+  const renameChannelSchema = setChannelSchema(channelNames);
 
   const formik = useFormik({
     initialValues: { name },

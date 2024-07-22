@@ -24,13 +24,8 @@ const channelsSlice = createSlice({
       state.lastAddedBy = payload.name;
     },
     renameChannel: (state, { payload }) => {
-      const index = state.channelsData.findIndex((channel) => channel.id === payload.id);
-      if (index !== -1) {
-        state.channelsData[index] = {
-          ...state.channelsData[index],
-          name: payload.name,
-        };
-      }
+      const channel = state.channelsData.find((channel) => channel.id === payload.id);
+      channel.name = payload.name;
     },
     removeChannel: (state, { payload }) => {
       if (state.currentChannelId === payload.id) {

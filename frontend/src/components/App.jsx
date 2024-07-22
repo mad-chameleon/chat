@@ -8,13 +8,12 @@ import LoginPage from '../pages/LoginPage';
 import SignUpPage from '../pages/SignUpPage';
 import ChatPage from '../pages/ChatPage';
 import routes from '../routes';
-import { useAuth, useModal, useSocket } from '../hooks';
+import { useAuth, useModal } from '../hooks';
 import modals from './modals';
 
 const App = () => {
   const { isLoggedIn } = useAuth();
   const { isOpen, modalType } = useModal();
-  useSocket();
 
   const Redirect = isLoggedIn ? <ChatPage /> : <Navigate to={routes.loginPagePath()} />;
 

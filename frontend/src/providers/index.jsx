@@ -1,11 +1,10 @@
 import {
-  useState, useMemo, useCallback, useEffect,
+  useState, useMemo, useCallback,
 } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { AuthContext, ModalContext, SocketContext } from '../contexts/index';
+import { AuthContext, ModalContext } from '../contexts/index';
 import { fetchUserData } from '../store/slices/userSlice';
-import { createSocketApi } from '../socket';
 
 export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
@@ -65,23 +64,5 @@ export const ModalProvider = ({ children }) => {
     >
       { children }
     </ModalContext.Provider>
-  );
-};
-
-export const SocketProvider = ({ children }) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const { setupSockets, cleanupSockets } = createSocketApi(dispatch);
-
-    setupSockets();
-
-    return () => cleanupSockets();
-  }, [dispatch]);
-
-  return (
-    <SocketContext.Provider value={null}>
-      { children }
-    </SocketContext.Provider>
   );
 };

@@ -18,17 +18,19 @@ export const createSocketApi = (dispatch) => {
     { event: routes.removeChannelPath(), handler: (payload) => dispatch(removeChannel(payload)) },
   ];
 
-  const setupSockets = () => {
-    socketHandlers
-      .forEach(({ event, handler }) => socket.on(event, handler));
-  };
-
   const cleanupSockets = () => {
     socketHandlers
       .forEach(({ event, handler }) => socket.off(event, handler));
+    console.log('Socket connection closed');
   };
 
-  return { setupSockets, cleanupSockets };
+  const setupSockets = () => {
+    socketHandlers
+      .forEach(({ event, handler }) => socket.on(event, handler));
+    socket.on('disconnect', cleanupSockets);
+  };
+
+  return { setupSockets };
 };
 
 export default socket;

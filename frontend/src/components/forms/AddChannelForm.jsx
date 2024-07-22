@@ -14,9 +14,8 @@ import { useModal } from '../../hooks/index';
 import { setCurrentChannelId, setLastAddedBy } from '../../store/slices/channelsSlice';
 import filterProfanityWords from '../../dictionary';
 import { useFetchChannelMutation } from '../../services/channelsApi';
-import handleFetchErrors from '../../utils';
+import handleFetchErrors, { setChannelSchema } from '../../utils';
 import usePrevious from '../../hooks/usePrevious';
-import useChannelSchema from '../../hooks/useChannelSchema';
 
 const AddChannelForm = () => {
   const { t } = useTranslation();
@@ -36,7 +35,7 @@ const AddChannelForm = () => {
     inputRef.current.focus();
   }, []);
 
-  const addChannelSchema = useChannelSchema(channelNames);
+  const addChannelSchema = setChannelSchema(channelNames);
 
   const formik = useFormik({
     initialValues: { name: '' },

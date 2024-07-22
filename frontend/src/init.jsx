@@ -6,9 +6,10 @@ import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { setLocale } from 'yup';
 
 import App from './components/App';
-import { AuthProvider, ModalProvider, SocketProvider } from './providers/index';
+import { AuthProvider, ModalProvider } from './providers/index';
 import resources from './locales/index.js';
 import store from './store/index.js';
+import { createSocketApi } from './socket';
 
 const init = async () => {
   const rollbarConfig = {
@@ -40,19 +41,20 @@ const init = async () => {
     },
   });
 
+  const { setupSockets } = createSocketApi(store.dispatch);
+  setupSockets();
+
   return (
     <RollbarProvider config={rollbarConfig}>
       <I18nextProvider i18n={i18n}>
         <Provider store={store}>
           <AuthProvider>
             <ModalProvider>
-              <SocketProvider>
-                <BrowserRouter>
-                  <ErrorBoundary>
-                    <App />
-                  </ErrorBoundary>
-                </BrowserRouter>
-              </SocketProvider>
+              <BrowserRouter>
+                <ErrorBoundary>
+                  <App />
+                </ErrorBoundary>
+              </BrowserRouter>
             </ModalProvider>
           </AuthProvider>
         </Provider>
