@@ -1,4 +1,4 @@
-import { Form, Button, FloatingLabel } from 'react-bootstrap';
+import { Form, Button, FormGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios, { isAxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -51,9 +51,9 @@ const LoginForm = () => {
   });
 
   return (
-    <Form onSubmit={formik.handleSubmit} className="col-12 col-md-6 mt-3 mt-mb-0">
+    <Form onSubmit={formik.handleSubmit} className="mt-3 mt-mb-0">
       <h1 className="text-center mb-4">{t('form.signIn')}</h1>
-      <FloatingLabel label={t('form.fields.nickname')} className="mb-3" controlId="username">
+      <FormGroup className="mb-3" controlId="username">
         <Form.Control
           ref={inputRef}
           type="text"
@@ -66,8 +66,8 @@ const LoginForm = () => {
           isInvalid={formState.isError}
           disabled={formik.isSubmitting}
         />
-      </FloatingLabel>
-      <FloatingLabel label={t('form.fields.password')} className="mb-4" controlId="password">
+      </FormGroup>
+      <FormGroup className="mb-4" controlId="password">
         <Form.Control
           type="password"
           name="password"
@@ -77,8 +77,8 @@ const LoginForm = () => {
           isInvalid={formState.isError}
           disabled={formik.isSubmitting}
         />
-        <Form.Control.Feedback type="invalid" tooltip>{formState.errorMessage}</Form.Control.Feedback>
-      </FloatingLabel>
+        <Form.Control.Feedback type="invalid">{formState.errorMessage}</Form.Control.Feedback>
+      </FormGroup>
       <Button
         variant="outline-primary"
         type="submit"

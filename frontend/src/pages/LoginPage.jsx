@@ -4,21 +4,17 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import LoginForm from '../components/forms/LoginForm';
-import loginAvatar from '../assets/login_avatar.jpg';
 import routes from '../routes';
 
 const LoginPage = () => {
   const { t } = useTranslation();
 
   return (
-    <Container fluid className="h-100">
+    <Container className="h-100">
       <Row className="justify-content-center align-content-center h-100">
-        <Col xxl={6} md={8} xs={12}>
-          <Card className="shadow-sm">
-            <Card.Body className="row p-5">
-              <Col md={6} xs={12} className="d-flex align-items-center justify-content-center">
-                <img src={loginAvatar} alt={t('form.signIn')} className="rounded-circle" />
-              </Col>
+        <Col xxl={5} md={8} xs={12}>
+          <Card className="shadow">
+            <Card.Body className="row p-3 p-md-5">
               <LoginForm />
             </Card.Body>
             <Card.Footer className="p-4">

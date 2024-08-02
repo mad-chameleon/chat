@@ -1,7 +1,7 @@
 import {
   Button,
-  FloatingLabel,
   Form,
+  FormGroup,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
@@ -81,9 +81,9 @@ const SignUpForm = () => {
   });
 
   return (
-    <Form onSubmit={formik.handleSubmit} className="w-50">
+    <Form onSubmit={formik.handleSubmit} className="mt-3 mt-mb-0">
       <h1 className="text-center mb-4 fs-2">{t('form.signUp')}</h1>
-      <FloatingLabel label={t('form.fields.username')} className="mb-3" controlId="username">
+      <FormGroup className="mb-4" controlId="username">
         <Form.Control
           ref={inputRef}
           type="text"
@@ -97,9 +97,9 @@ const SignUpForm = () => {
           disabled={formik.isSubmitting}
           isInvalid={(formik.errors.username && formik.touched.username) || formState.isError}
         />
-        <Form.Control.Feedback tooltip type="invalid">{formik.errors.username}</Form.Control.Feedback>
-      </FloatingLabel>
-      <FloatingLabel label={t('form.fields.password')} className="mb-3" controlId="password">
+        <Form.Control.Feedback type="invalid">{formik.errors.username}</Form.Control.Feedback>
+      </FormGroup>
+      <FormGroup className="mb-4" controlId="password">
         <Form.Control
           type="password"
           name="password"
@@ -110,9 +110,9 @@ const SignUpForm = () => {
           disabled={formik.isSubmitting}
           isInvalid={(formik.errors.password && formik.touched.password) || formState.isError}
         />
-        <Form.Control.Feedback tooltip type="invalid">{formik.errors.password}</Form.Control.Feedback>
-      </FloatingLabel>
-      <FloatingLabel label={t('form.fields.passwordConfirmation')} className="mb-3" controlId="passwordConfirmation">
+        <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
+      </FormGroup>
+      <FormGroup className="mb-4" controlId="passwordConfirmation">
         <Form.Control
           type="password"
           name="passwordConfirmation"
@@ -130,10 +130,10 @@ const SignUpForm = () => {
             ) || formState.isError
           }
         />
-        <Form.Control.Feedback tooltip type="invalid">
+        <Form.Control.Feedback type="invalid">
           {formState.isError ? formState.errorMessage : formik.errors.passwordConfirmation}
         </Form.Control.Feedback>
-      </FloatingLabel>
+      </FormGroup>
       <Button
         variant="outline-primary"
         type="submit"

@@ -25,7 +25,7 @@ export default {
       logoutBtn: 'Выйти',
     },
     form: {
-      signIn: 'Войти',
+      signIn: 'Вход',
       signInBtn: 'Войти',
       signUp: 'Регистрация',
       signUpBtn: 'Зарегистрироваться',
