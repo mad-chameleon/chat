@@ -35,28 +35,28 @@ export const AuthProvider = ({ children }) => {
 
 export const ModalProvider = ({ children }) => {
   const [modalType, setModalType] = useState(null);
-  const [isOpen, setModalIsOpen] = useState(false);
-  const [channelId, setCurrentChannelId] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
 
   const showModal = useCallback((type, id = null) => {
-    setCurrentChannelId(id);
+    setCurrentId(id);
     setModalType(type);
-    setModalIsOpen(true);
+    setIsOpen(true);
   }, []);
 
   const hideModal = useCallback(() => {
-    setCurrentChannelId(null);
+    setCurrentId(null);
     setModalType(null);
-    setModalIsOpen(false);
+    setIsOpen(false);
   }, []);
 
   const contextValue = useMemo(() => ({
     modalType,
     isOpen,
-    channelId,
+    currentId,
     showModal,
     hideModal,
-  }), [modalType, isOpen, channelId, showModal, hideModal]);
+  }), [modalType, isOpen, currentId, showModal, hideModal]);
 
   return (
     <ModalContext.Provider

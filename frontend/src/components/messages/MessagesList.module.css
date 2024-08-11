@@ -1,0 +1,10 @@
+
+.w25 { width: 25%; }
+.w50 { width: 50%; }
+.w75 { width: 75%; }
+
+@media (max-width: 772px) {
+    .w25 { width: 75%; }
+    .w50 { width: 75%; }
+    .w75 { width: 75%; }
+}

@@ -19,8 +19,26 @@ export const messagesApi = createApi({
         data: message,
       }),
     }),
+    fetchDeleteMessage: builder.mutation({
+      query: ({ id }) => ({
+        url: routes.editMessageApiPath(id),
+        method: 'DELETE',
+      }),
+    }),
+    fetchEditMessage: builder.mutation({
+      query: ({ id, editedMessage }) => ({
+        url: routes.editMessageApiPath(id),
+        method: 'PATCH',
+        data: editedMessage,
+      }),
+    }),
   }),
 });
 
 export const selectAddMessageStatus = (state) => messagesApi.endpoints.addMessage.select()(state);
-export const { useFetchMessagesQuery, useFetchMessageMutation } = messagesApi;
+export const {
+  useFetchMessagesQuery,
+  useFetchMessageMutation,
+  useFetchDeleteMessageMutation,
+  useFetchEditMessageMutation,
+} = messagesApi;

@@ -7,8 +7,8 @@ import { useDispatch } from 'react-redux';
 
 import { setChannelsData } from '../store/slices/channelsSlice';
 import { setMessages } from '../store/slices/messagesSlice';
-import ChannelsList from '../components/ChannelsList';
-import MessagesList from '../components/MessagesList';
+import ChannelsList from '../components/channels/ChannelsList';
+import MessagesList from '../components/messages/MessagesList';
 import { useModal } from '../hooks';
 import { useFetchChannelsQuery } from '../services/channelsApi';
 import { useFetchMessagesQuery } from '../services/messagesApi';

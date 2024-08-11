@@ -10,17 +10,21 @@ export default {
     },
     questions: {
       confirmChannelDeletion: 'Уверены?',
+      confirmMessageDeletion: 'Уверены?',
     },
     chat: {
       channels: 'Каналы',
       channelName: 'Имя канала',
       addChannel: 'Добавить канал',
       deleteChannel: 'Удалить канал',
+      deleteMessage: 'Удалить сообщение',
+      editMessage: 'Редактировать сообщение',
       renameChannel: 'Переименовать канал',
       channelControl: 'Управление каналом',
       addChannelBtn: '+',
       deleteChannelBtn: 'Удалить',
       renameChannelBtn: 'Переименовать',
+      editMessageBtn: 'Редактировать',
       switchChannelBtn: '#',
       logoutBtn: 'Выйти',
     },
@@ -47,6 +51,11 @@ export default {
           count_many: '{{count}} сообщений',
         },
       },
+    },
+    msgContextMenu: {
+      edit: 'Редактировать',
+      delete: 'Удалить',
+      copy: 'Скопировать',
     },
     errors: {
       reload: 'Перезагрузите страницу.',

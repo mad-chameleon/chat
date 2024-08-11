@@ -12,9 +12,12 @@ export default {
   channelsApiPath: () => ['/channels'].join('/'),
   editChannelApiPath: (id) => ['/channels', `${id}`].join('/'),
   messagesApiPath: () => ['/messages'].join('/'),
+  editMessageApiPath: (id) => ['/messages', `${id}`].join('/'),
 
   newMessagePath: () => 'newMessage',
   newChannelPath: () => 'newChannel',
   renameChannelPath: () => 'renameChannel',
   removeChannelPath: () => 'removeChannel',
+  removeMessagePath: () => 'removeMessage',
+  editMessagePath: () => 'renameMessage',
 };

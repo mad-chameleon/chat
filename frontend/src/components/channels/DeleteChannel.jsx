@@ -4,15 +4,15 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 
-import { useModal } from '../hooks';
+import { useModal } from '../../hooks';
 // eslint-disable-next-line import/named
-import { useFetchDeleteChannelMutation } from '../services/channelsApi';
-import handleFetchErrors from '../utils';
-import usePrevious from '../hooks/usePrevious';
+import { useFetchDeleteChannelMutation } from '../../services/channelsApi';
+import handleFetchErrors from '../../utils';
+import usePrevious from '../../hooks/usePrevious';
 
 const DeleteChannel = () => {
   const { t } = useTranslation();
-  const { channelId, hideModal } = useModal();
+  const { currentId, hideModal } = useModal();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,7 +22,7 @@ const DeleteChannel = () => {
   const onHandleDeleteChannel = async () => {
     setIsSubmitting(true);
 
-    const { error } = await fetchDeleteChannel({ channelId });
+    const { error } = await fetchDeleteChannel({ channelId: currentId });
     if (error) {
       handleFetchErrors(error, t);
       setIsSubmitting(false);

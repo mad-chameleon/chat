@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 
 import routes from './routes';
-import { addMessage } from './store/slices/messagesSlice';
+import { addMessage, editMessage, removeMessage } from './store/slices/messagesSlice';
 import { addChannel, removeChannel, renameChannel } from './store/slices/channelsSlice';
 
 const socket = io();
@@ -16,6 +16,8 @@ export const createSocketApi = (dispatch) => {
     { event: routes.newChannelPath(), handler: (payload) => dispatch(addChannel(payload)) },
     { event: routes.renameChannelPath(), handler: (payload) => dispatch(renameChannel(payload)) },
     { event: routes.removeChannelPath(), handler: (payload) => dispatch(removeChannel(payload)) },
+    { event: routes.removeMessagePath(), handler: (payload) => dispatch(removeMessage(payload)) },
+    { event: routes.editMessagePath(), handler: (payload) => dispatch(editMessage(payload)) },
   ];
 
   const cleanupSockets = () => {

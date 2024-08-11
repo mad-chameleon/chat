@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { setCurrentChannelId } from '../store/slices/channelsSlice';
-import { useModal } from '../hooks';
+import { setCurrentChannelId } from '../../store/slices/channelsSlice';
+import { useModal } from '../../hooks';
 
 const ChannelsList = () => {
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ const ChannelsList = () => {
                   <span className="visually-hidden">{t('chat.channelControl')}</span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => showModal('delete', id)}>
+                  <Dropdown.Item onClick={() => showModal('deleteChannel', id)}>
                     {t('chat.deleteChannelBtn')}
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => showModal('rename', id)}>

@@ -7,43 +7,36 @@ import {
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 
 import { useModal } from '../../hooks';
 import filterProfanityWords from '../../dictionary';
-import { useFetchRenameChannelMutation } from '../../services/channelsApi';
-import handleFetchErrors, { setChannelSchema } from '../../utils';
+import handleFetchErrors from '../../utils';
 import usePrevious from '../../hooks/usePrevious';
+import { useFetchEditMessageMutation } from '../../services/messagesApi';
 
-const RenameChannelModal = () => {
+const EditMessageForm = () => {
   const { t } = useTranslation();
 
   const { currentId, hideModal } = useModal();
 
   const inputRef = useRef();
 
-  const channels = useSelector((state) => state.channels.channelsData);
-
-  const channelNames = channels.map(({ name }) => name);
-  const { name } = channels.find(({ id }) => Number(id) === Number(currentId));
-
-  const [fetchRenameChannel] = useFetchRenameChannelMutation();
+  const { messages } = useSelector((state) => state.messages);
+  const { body } = messages.find(({ id }) => id === currentId);
+  const [fetchEditMessage] = useFetchEditMessageMutation();
 
   useEffect(() => {
     inputRef.current.select();
   }, []);
 
-  const renameChannelSchema = setChannelSchema(channelNames);
-
   const formik = useFormik({
-    initialValues: { name },
-    validationSchema: renameChannelSchema,
+    initialValues: { body },
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
-      const preparedData = { name: filterProfanityWords(values.name.trim()), channelId: currentId };
+      const editedMessage = { body: filterProfanityWords(values.body) };
 
-      const { error } = await fetchRenameChannel(preparedData);
+      const { error } = await fetchEditMessage({ id: currentId, editedMessage });
       if (error) {
         handleFetchErrors(error, t);
         return;
@@ -52,14 +45,13 @@ const RenameChannelModal = () => {
     },
   });
 
-  const prevChannelName = usePrevious(name);
+  const prevMessageBody = usePrevious(body);
 
   useEffect(() => {
-    if (prevChannelName !== undefined && name !== prevChannelName) {
+    if (prevMessageBody !== undefined && body !== prevMessageBody) {
       hideModal();
-      toast.success(t('toasts.channelRenamed'));
     }
-  }, [name, prevChannelName]);
+  }, [body, prevMessageBody]);
 
   return (
     <Form onSubmit={formik.handleSubmit}>
@@ -67,15 +59,14 @@ const RenameChannelModal = () => {
         <FormControl
           className="mb-2"
           ref={inputRef}
-          id="name"
-          name="name"
-          value={formik.values.name}
+          required
+          id="body"
+          name="body"
+          value={formik.values.body}
           onChange={formik.handleChange}
-          isInvalid={formik.errors.name && formik.touched.name}
           disabled={formik.isSubmitting}
         />
-        <Form.Label className="visually-hidden" htmlFor="name">{t('chat.channelName')}</Form.Label>
-        <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
+        <Form.Label className="visually-hidden" htmlFor="body">{t('chat.channelName')}</Form.Label>
         <div className="d-flex justify-content-end">
           <Button
             type="button"
@@ -91,7 +82,7 @@ const RenameChannelModal = () => {
             variant="primary"
             disabled={formik.isSubmitting}
           >
-            {t('chat.renameChannelBtn')}
+            {t('chat.editMessageBtn')}
           </Button>
         </div>
       </FormGroup>
@@ -99,4 +90,4 @@ const RenameChannelModal = () => {
   );
 };
 
-export default RenameChannelModal;
+export default EditMessageForm;

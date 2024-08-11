@@ -8,7 +8,7 @@ The main features include:
 
 - **Multi-user Chat:** Multiple users can join and participate in conversations in real-time.
 - **Channel Creation:** Users can create and manage different channels for various topics or teams.
-- **Messaging:** Users can send and receive messages within channels.
+- **Messaging:** Users can send, receive, edit or delete their messages.
 - **User-friendly** Interface: The application provides an intuitive and easy-to-use interface for seamless communication.
 
 The frontend was built with React.
